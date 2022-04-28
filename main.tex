@@ -1,0 +1,105 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{xcolor}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{claim}{Claim}
+\newtheorem{corollary}{Corollary}
+\newtheorem{observation}{Observation}
+\newtheorem{remark}{Remark}
+\newtheorem{oq}{Open Question}
+\usepackage[normalem]{ulem}
+
+
+
+\begin{document}
+\title{Final Project - Distributed Graph Algorithms - Spring 2022\\
+On the paper: "Can We Break Symmetry with o(m) Communication?", by "SHREYAS PAI, GOPAL PANDURANGAN, SRIRAM V. PEMMARAJU, PETER ROBINSON"
+}
+\author{Rotem Shavitt\footnote{rotemshavitt@campus.technion.ac.il, 209638162} \and Ido Frankel\footnote{ido.frankel@campus.technion.ac.il, 318985108}
+}
+\date{date}
+	\maketitle
+% \section{Summary - Project}	
+% This section should contain a 2-4 page summary of the paper that was assigned to you. The length of this section is not an evaluation criteria and so maximizing it should not be your aim.
+% The summary should be understandable to a reader that is familiar with what we study in the course
+% \emph{without the need to read the paper}. The summary should focus on the ideas that are given in the paper, rather than explicit notations and proofs. It must be written in your own words. Please keep in mind that copying parts of the assigned paper is strictly forbidden.
+
+\section*{Summary - Our}
+
+The article discusses the message complexity in distributed symmetry breaking problems, aiming $\Delta + 1 $ colouring and MIS problems. In global problems, It has been proven that $\Omega(m)$ messages is a lower bound with no additional assumptions. knowing this, the authors are trying to answer whether this bound implies(todo ?) to local problems as well, or whether sublinear message (i.e $o(m)$) complexity is possible for problems such as $\Delta +1$ colouring and MIS in the KT-1 model. The results are achieved in three different congest models, KT-1, KT-2 and the general model KT-$\rho$, (which stands for Knowledge till radius $\rho$).
+
+\subsection*{Lower bounds}
+The paper suggests 2 constructions of designated graphs in order to prove $\Omega(m)$ and $\Omega(n)$ lower bounds in KT-$1$ and KT-$\rho$ (for $\rho \ge 2$) respectively. 
+
+First, the paper suggests a Base Graph $G \cup G'$, where $G'$ is a copy of $G = ( X \cup Y \cup Z, E)$, in which $X \cup Y$, $Y \cup Z$ are both isomorphic to the complete bipartite graph. The paper then suggests two different edge set, resulting with two different graphs denoted \textit{base graph} $G \cup G'$, and \textit{crossed Graph} $G_{e,e'}$.
+The authors then shows that the previous graphs are similar in terms of executions for any comparison base algorithm $\mathcal{A}$. The paper relies directly on the lemmas and definitions introduced by Awerbuch et al.\cite{Awerbuch}, which we will briefly introduce. In their paper they define an edge $(u,v)$ as utilized during an execution if a message is sent on it or if either $u, v$ sends or receives a message containing the other edge-end vertix ID assignment \textbf{(TODO - NEEDS TO CLARIFY THE DEFINITION. I DID NOT WANT TO COPY-PASTE ORIGINAL DEFINITION)}.\sout{A key element in the authors proof of the requested lower bounds, is the indistinguishability arguments whichh uses edge crossing}
+
+Awerbuch et al. showed that if pair of crossing edges $e, e'$ are not utilized during the execution by a comparison algorithm $\mathcal{A}$, then the executions of the touching nodes in both graphs are similar.
+
+The article relies on the execution's similarities in order to show that by well-chosen edges in the graph a contradiction can be achieved with respect to the correctness of problems such as $\Delta +1 $ colouring and MIS. which then impose a constraint on the comparison algorithm itself, which leads to the desire lower bounds.
+
+In order to show the $\Omega(m)$ for the $(\Delta +1)$-colouring in KT$-1$ congest model, the authors suggest two different ID assignments $\phi, \psi$, for the base graph and the crossed graph respectively. They then use the fact that $G$ and $G'$ are isomorphic in order to show that the execution $EX_G$ and $EX_G'$ are similar for every $v$ and $v'$. later, based on the definition of $\psi$ the authors shows that every vertex in $G$, and its counterpart in $G'$ have the same local state under $\psi$. Because $EX$ and $EX_e,e'$ are similar, it means they have the same colour. The contradiction is achieved by picking a specific vertices $y,y'$ which are neighbours in the crossed graph, hence must not have the same colour.
+
+Next, the article proves a lower bound of $\Omega(n)$ in expectation w.h.p in KT-$\rho$ ($\rho \ge 2$). for any randomized Monte Carlo algorithm.
+The proof presented in the article relies on previous work by by Linial \cite{Linial}, and Naor \cite{Naor} which presents rounds lower bound for any probabilistic algorithm for 3-coloring and MIS. The paper uses their results to present a lower bound of $\Omega(n)$ message. The paper presents a Graph $G$ consisting of disjoint union of $\frac{n}{k}$ cycles (each of $k$ nodes, where $k$ is a constant defined in the paper). The authors assume by contradiction there exists an algorithm which sends sub-linear amount of messages, since there are  $\Omega(n)$ cycles, it holds that with high probability there exists a cycle which all of its nodes, do not send any message. Meaning, the output of such node is based on its initial knowledge which consists of the random choice of colour, and its neighbourhood. Because the behaviour follows the same probability distribution under both KT-$\rho$ and KT-$0$, it implies that in high probability there exists two nodes in the cycle which output the same colour.
+
+
+\subsection*{Upper Bound} On the upper bound hand, the article presents 3 new algorithms that improve message complexity under different circumstances. Two of them are for colouring problems and another for finding MIS.
+\newline The first algorithm presented runs in the KT-1 CONGEST model and creates $(\Delta+1)$ coloring solution in ${\Tilde{O}}(D+\sqrt{n})$ round with ${\Tilde{O}}(n^{1.5})$ message complexity. It is partitioning all vertices into $L, B_1, B_2, ..., B_k$ disjoint sets: with probability $q$ joins $L$, and if not, then it will join one of $B_1, B_2, ..., B_k$ uniformly. The colors will also be divided into k disjoint sets $C_1, C_2, ..., C_k$ uniformly. These partition obtains (continue needed qualitys).
+\newline At first we Build a danner graph $H$ and elect a leader $l$ that will broadcast a string. All the nodes will use that string to calculate the initial state of the algorithm, meaning which set of nodes to join and for each color in what pallet $C_i$ it will be in. Then, in each $B_i$ the nodes will execute a randomized algorithm for coloring by Johansson []. This algorithm is run recursively until $G[L]$ has $\Tilde{O}(n)$ edges, which can be checked by using the danner $H$. When it reaches $\Tilde{O}(n)$ edges, we run the Johansson [] coloring algorithm on $G[L]$ and finish.
+\newline [needs to sum]
+\newline The next algorithm shows how in the KT-1 CONGEST model when we drop the demand for $(\Delta+1)$ coloring solution and instead solve a $(1+\epsilon)\Delta$ coloring solution, we can improve message complexity to $\Tilde{O}(n/\epsilon^2)$. This algorithm works for any $\epsilon$ but is an improvement for higher values of $\epsilon$.
+In each phase of the algorithm, every node choices randomly a potential color, check if that choice is valid with respect to it's neighbors coloring, and if so determines it to be it's final color and deactivates. Whp, all the nodes are assigned a color after $O(\frac{\log{n}}{\epsilon})$ rounds. In each round, the active nodes needs to communicate with their active neighbors, counting to be $O((\log{n})^{2}/ \epsilon)$ whp, summing into the message complexity $\Tilde{O}(n/\epsilon^2)$.
+\newline The last algorithm presented in the article is an MIS algorithm that works in the KT-2 congest model. First a set of $O(\sqrt{n})$ vertices is chosen as the starting input of a randomized greedy MIS algorithm. Each vertex $v$ that enters the MIS now needs to inform all $v$'s neighbors in order for them to deactivate themselves. In addition we want to inform $v$'s 2-hop neighbors if their neighbors were deactivated. For this we use the the additional knowledge of the KT-2 model. Because all the vertices of max distance from $v$ knows each others IDs, they can calculate with no additional information a BFS tree to transfer the exact amount of messages needed instead of broadcasting which may cause a situation where a vertex receives double messages. After the graph has been updated accordingly, they run Luby's [] algorithm on the remnant graph. In total, the message comlexity achieved by this algorithm is $\Tilde{O}(n^{1.5})$.
+
+\section{Related Work}
+This section should cover work that is related to the assigned paper. It should cover work that was chronologically done before this paper, and also work that was done after it (use online sources, such as Google Scholar).
+\section{New Results}
+This section should contain a description of a new result. Think about the task of the assigned paper in \emph{other models} of distributed computing. Think about \emph{other tasks} in the model of the assigned paper. Think about removing or adding \emph{assumptions} to the task or the model. Think about sub cases (a family of graphs rather than a general graph, etc.). Your project certainly does not have to be a publishable result (though there have been such cases in the past), but it should show your understanding of the different aspects of distributed computing.
+
+\bibliographystyle{alpha}
+\bibliography{bib-filename}
+
+\begin{thebibliography}{9}
+\bibitem{Awerbuch}
+Baruch Awerbuch, Oded Goldreich, David Peleg, and Ronen Vainish. 1988. A Tradeoff between Information and Communication in Broadcast
+Protocols. 319 LNCS, 2 (1988), 369–379. https://doi.org/10.1007/BFb0040404
+
+\bibitem{Linial}
+Nathan Linial. 1992. Locality in Distributed Graph Algorithms. SIAM J. Comput. 21, 1 (1992), 193–201. https://doi.org/10.1137/02210
+
+\bibitem{Naor}
+Moni Naor. 1991. A Lower Bound on Probabilistic Algorithms for Distributive Ring Coloring. SIAM J. Discret. Math. 4, 3 (1991), 409–412.
+https://doi.org/10.1137/0404036
+
+\end{thebibliography}
+
+\subsection*{Past papers}
+\subsubsection*{Iddo}
+I have briefly read the following papers:
+\begin{itemize}
+    \item paper [2] mostly introduces several definitions that our paper then uses in the $\Omega(m)$ lower bound in KT-1.
+    \item paper [24] and [30] prove that any probabilistic algorithm for 3-coloring the ring must take at least $\frac{1}{2}\log^*(n) -2$ rounds.
+    our paper use this fact for the $\Omega(n)$ lower bounds proof for the KT-2 and KT-$\rho$
+\end{itemize}
+   
+    
+
+
+
+\end{document} 
+
+
