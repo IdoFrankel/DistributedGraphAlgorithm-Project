@@ -60,7 +60,7 @@ The paper suggests 2 constructions of designated graphs in order to prove $\Omeg
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.7]{graph_cross_graph}
-    \caption{base graph $G \cup G'$, and the crossed graph $G_{e,e'}$ (dashed) taken from the article}
+    \caption{base graph $G \cup G'$, and the crossed graph $G_{e,e'}$ (dashed), taken from the article \cite{origin}}
     \label{fig:graph_cross_graph}
 \end{figure}
 First, the paper suggests a \textit{Base Graph} $G \cup G'$, where $G$ = $( X \cup Y \cup Z, E)$, in which $X \cup Y$, $Y \cup Z$ are complete bipartite graphs, and $G'$ is a copy of $G$. 
@@ -238,7 +238,7 @@ This algorithm finds a $(k, k\log{n})$-Ruling Set for any $U\subseteq V$. This a
 
 \begin{lemma}
 \label{bfs_tree}
-All vertices in $u$'s $BFS$ tree within distance $k$ receive the ID message after $k$ rounds of forwarding with $O(\Delta^k)$ messages in total. 
+All nodes in $u$'s $BFS$ tree within distance $k$ receive the ID message after $k$ rounds of forwarding with $O(\Delta^k)$ messages in total. 
 \end{lemma}
 We'll first explain and prove how in KT-$(2k-2)$ model a depth k $BFS$ tree can be computed with no additional messages.
 Every node which receive an ID message can infer it's distance $d$ from the root by the number of rounds passed from the beginning of the round. Every node at distance $d+1$, holds that it's father in the $BFS$ tree would be the node of distance $d$ with the lowest ID.
@@ -270,7 +270,7 @@ We'll prove by induction that in the beginning of the $i_{th}$ iteration, $\fora
 let $u\in U$, by induction assumption $\exists r\in R$ s.t. $d(u,r)\le (i-1)\cdot k$. Divide into cases for the end of the $i_{th}$ iteration
 \begin{itemize}
     \item $r\in R$: hence the assumption holds.
-    \item $r \notin R$: hence $r$ was removed from $R$. Meaning, in the beginning of the $i_{th}$ iteration, $\exists r'\in R$ s.t. $r'$ initiated a message with $r'$ ID, which $r$ received. According to the algorithm $r'.id[i]=1 \land r'\in R$. By lemma \ref{bfs_tree} since a message was received, at the end of the $i_{th}$ iteration it holds $d(r',r)\le k$. Thus, $d(r',u)\le d(r',r)+d(r,u)\le k+(i-1)\cdot k=i\cdot k$. In addition at the end of the iteration, $r' \in R$, as it holds $r'.id[i]=1$. Hence the induction assumption holds.
+    \item $r \notin R$: hence $r$ was removed from $R$. Meaning, in the beginning of the $i_{th}$ iteration, $\exists r'\in R$ s.t. $r'$ initiated a message with $r'$ ID, which $r$ received. According to the algorithm $r'.id[i]=1 \land r'\in R$. By lemma \ref{bfs_tree} since a message was received, at the end of the $i_{th}$ iteration it holds $d(r',r)\le k$. Thus, $d(r',u)\le d(r',r)+d(r,u)\le k+(i-1)\cdot k=i\cdot k$. In addition, at the end of the iteration $r' \in R$, as it holds $r'.id[i]=1$. Hence the induction assumption holds.
 \end{itemize}
 In the beginning of a hypothetical $\log{n}+1$ iteration, (i.e at the end of the $\log{n}$ iteration), $\forall u\in U, \: \exists r\in R, \text{ s.t } d(u,r) \le (\log{n}+1-1)\cdot k = k\cdot\log{n}$.
 
@@ -298,6 +298,12 @@ O(|U|\cdot \Delta^k\log{n}) = O(n\cdot\Delta^k\log{n}) < O(n\cdot \frac{n}{\log{
 \bibliography{bib-filename}
 
 \begin{thebibliography}{9}
+\bibitem{origin}
+Shreyas Pai, Gopal Pandurangan, Sriram V. Pemmaraju, and Peter Robinson. Can we break symmetry with
+o(m) communication? In Avery Miller, Keren Censor-Hillel, and Janne H. Korhonen, editors, PODC ’21:
+ACM Symposium on Principles of Distributed Computing, Virtual Event, Italy, July 26-30, 2021, pages 247–
+257. ACM, 2021.
+
 \bibitem{Awerbuch}
 Baruch Awerbuch, Oded Goldreich, David Peleg, and Ronen Vainish. 1988. A Tradeoff between Information and Communication in Broadcast
 Protocols. 319 LNCS, 2 (1988), 369–379. https://doi.org/10.1007/BFb0040404
